@@ -7,6 +7,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -18,6 +20,8 @@
   --cream: #F5EDD8;
   --parchment: #EDE0C4;
   --angel-blue: #4A7BB5;
+  --header-h: 78px;
+  --tabs-h: 42px;
 }
 
 html, body {
@@ -31,7 +35,6 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 0;
   min-height: 100vh;
 }
 
@@ -49,7 +52,7 @@ body {
 /* HEADER */
 .header {
   background: var(--navy);
-  padding: 20px 24px 16px;
+  padding: 16px 20px 14px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -57,21 +60,18 @@ body {
   position: sticky;
   top: 0;
   z-index: 50;
+  height: var(--header-h);
 }
 
-.header-angel {
-  font-size: 28px;
-  margin-right: 10px;
-}
-
-.header-text { flex: 1; }
+.header-angel { font-size: 26px; margin-right: 10px; flex-shrink: 0; }
+.header-text { flex: 1; min-width: 0; }
 
 .header-title {
   font-family: 'Cinzel', serif;
   color: var(--gold-light);
-  font-size: 17px;
+  font-size: 16px;
   font-weight: 600;
-  letter-spacing: 1px;
+  letter-spacing: 0.8px;
 }
 
 .header-sub {
@@ -79,10 +79,9 @@ body {
   font-size: 11px;
   margin-top: 2px;
   font-weight: 300;
-  letter-spacing: 0.5px;
 }
 
-.progress-wrap { text-align: right; }
+.progress-wrap { text-align: right; flex-shrink: 0; }
 
 .progress-label {
   color: var(--gold-light);
@@ -96,7 +95,7 @@ body {
   background: rgba(255,255,255,0.12);
   border-radius: 20px;
   height: 7px;
-  width: 130px;
+  width: 120px;
   overflow: hidden;
 }
 
@@ -113,13 +112,14 @@ body {
   border-bottom: 1.5px solid var(--gold);
   background: var(--parchment);
   position: sticky;
-  top: 78px;
+  top: var(--header-h);
   z-index: 40;
+  height: var(--tabs-h);
 }
 
 .tab {
   flex: 1;
-  padding: 11px 8px;
+  padding: 10px 8px;
   text-align: center;
   font-size: 12px;
   font-family: 'Cinzel', serif;
@@ -141,7 +141,7 @@ body {
 .tab:hover:not(.active) { background: rgba(201,168,76,0.08); }
 
 /* PANELS */
-.panel { display: none; padding: 20px 16px; flex: 1; }
+.panel { display: none; padding: 18px 16px; flex: 1; }
 .panel.active { display: block; }
 
 .section-title {
@@ -193,6 +193,7 @@ body {
   position: relative;
   transition: box-shadow 0.2s, transform 0.15s, border-color 0.2s;
   cursor: pointer;
+  user-select: none;
 }
 
 .angel-card:hover {
@@ -217,7 +218,7 @@ body {
 .angel-card.collected .checkmark { display: block; }
 
 .angel-icon {
-  font-size: 38px;
+  font-size: 36px;
   margin-bottom: 7px;
   display: block;
   filter: grayscale(1) opacity(0.3);
@@ -284,7 +285,7 @@ body {
 .upload-text { font-family: 'Cinzel', serif; color: var(--navy); font-size: 11px; font-weight: 600; }
 .upload-sub { font-size: 10px; color: #aaa; margin-top: 3px; font-weight: 300; }
 
-.angel-select-wrap { display: none; margin-bottom: 16px; }
+.angel-select-wrap { display: none; margin-bottom: 16px; background: white; border: 1px solid var(--parchment); border-radius: 10px; padding: 14px; }
 .angel-select-label { font-size: 11px; color: #777; margin-bottom: 8px; font-weight: 300; }
 
 .angel-btns { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
@@ -338,7 +339,6 @@ body {
   width: 46px; height: 46px;
   border-radius: 7px;
   background: var(--parchment);
-  object-fit: cover;
   flex-shrink: 0;
   display: flex;
   align-items: center;
@@ -347,10 +347,10 @@ body {
   overflow: hidden;
 }
 
-.photo-thumb img { width: 100%; height: 100%; object-fit: cover; border-radius: 7px; }
+.photo-thumb img { width: 100%; height: 100%; object-fit: cover; border-radius: 7px; display: block; }
 
 .photo-meta { flex: 1; min-width: 0; }
-.photo-angel-name { font-family: 'Cinzel', serif; font-size: 11px; color: var(--navy); font-weight: 600; }
+.photo-angel-name { font-family: 'Cinzel', serif; font-size: 11px; color: var(--navy); font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .photo-date { font-size: 10px; color: #aaa; margin-top: 1px; }
 
 .badge-pill {
@@ -360,6 +360,7 @@ body {
   font-weight: 700;
   letter-spacing: 0.3px;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .verified { background: #E6F7EE; color: #1A7A4A; }
@@ -379,7 +380,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 56px;
+  font-size: 54px;
   background: white;
   transition: all 0.4s;
 }
@@ -465,6 +466,8 @@ body {
   margin-top: 1px;
 }
 
+.pttk-row a { color: var(--gold-light); }
+
 /* MODAL */
 .modal-backdrop {
   display: none;
@@ -498,7 +501,7 @@ body {
 .modal-icon { font-size: 52px; margin-bottom: 10px; }
 .modal-name { font-family: 'Cinzel', serif; font-size: 16px; color: var(--navy); font-weight: 600; margin-bottom: 4px; }
 .modal-loc { font-size: 12px; color: var(--angel-blue); margin-bottom: 12px; }
-.modal-desc { font-size: 11px; color: #666; line-height: 1.65; margin-bottom: 18px; font-weight: 300; }
+.modal-desc { font-size: 11px; color: #666; line-height: 1.65; margin-bottom: 18px; font-weight: 300; text-align: left; }
 
 .modal-btns { display: flex; gap: 8px; }
 
@@ -524,8 +527,32 @@ body {
   border-color: var(--navy);
 }
 
-.modal-btn.primary:hover { background: var(--navy-light); }
+.modal-btn.primary:hover:not(:disabled) { background: var(--navy-light); }
 .modal-btn.primary:disabled { opacity: 0.55; cursor: default; }
+
+/* TOAST */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(60px);
+  background: var(--navy);
+  color: var(--gold-light);
+  font-family: 'Cinzel', serif;
+  font-size: 12px;
+  padding: 10px 20px;
+  border-radius: 20px;
+  border: 1px solid var(--gold);
+  z-index: 300;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  opacity: 0;
+  white-space: nowrap;
+}
+
+.toast.show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
 
 /* FOOTER */
 .footer {
@@ -535,6 +562,7 @@ body {
   color: #bbb;
   font-weight: 300;
   border-top: 1px solid var(--parchment);
+  margin-top: auto;
 }
 
 .no-photos {
@@ -543,6 +571,102 @@ body {
   font-size: 11px;
   color: #bbb;
   font-weight: 300;
+}
+
+.map-legend {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: white;
+  border: 1px solid var(--parchment);
+  border-radius: 7px;
+  padding: 6px 9px;
+  font-size: 10px;
+  color: #777;
+  font-weight: 300;
+  transition: border-color 0.3s, background 0.3s;
+}
+
+.legend-item.done {
+  border-color: var(--gold);
+  background: #FFFBF0;
+  color: var(--navy);
+}
+
+.leg-num {
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: #ccc;
+  color: white;
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  font-weight: 600;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.3s;
+}
+
+.legend-item.done .leg-num { background: var(--gold); }
+
+.leg-name { line-height: 1.3; }
+
+.map-wrap {
+  width: 100%;
+  height: 340px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1.5px solid var(--gold);
+  margin-bottom: 10px;
+  background: var(--parchment);
+}
+
+.map-footer-note {
+  font-size: 10px;
+  color: #aaa;
+  font-weight: 300;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 4px;
+}
+
+.map-footer-note i { font-size: 13px; color: var(--gold); }
+
+.map-loading {
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column;
+  gap: 8px;
+  color: #aaa;
+  font-size: 11px;
+  font-weight: 300;
+}
+
+.map-loading-spinner {
+  width: 28px; height: 28px;
+  border: 3px solid var(--parchment);
+  border-top-color: var(--gold);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+  background: #FFF4E5;
+  border: 1px solid #E5A000;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 10px;
+  color: #7A4800;
+  margin-bottom: 10px;
+  display: none;
 }
 </style>
 </head>
@@ -566,16 +690,17 @@ body {
   </header>
 
   <!-- TABS -->
-  <nav class="tabs" role="tablist">
-    <button class="tab active" role="tab" onclick="switchTab('kolekcja')">Kolekcja</button>
-    <button class="tab" role="tab" onclick="switchTab('zdjecia')">Zdjęcia</button>
-    <button class="tab" role="tab" onclick="switchTab('odznaka')">Odznaka</button>
+  <nav class="tabs" role="tablist" aria-label="Sekcje aplikacji">
+    <button class="tab active" role="tab" aria-selected="true" onclick="switchTab('kolekcja')">Kolekcja</button>
+    <button class="tab" role="tab" aria-selected="false" onclick="switchTab('zdjecia')">Zdjęcia</button>
+    <button class="tab" role="tab" aria-selected="false" onclick="switchTab('mapa')">Mapa</button>
+    <button class="tab" role="tab" aria-selected="false" onclick="switchTab('odznaka')">Odznaka</button>
   </nav>
 
   <!-- PANEL: KOLEKCJA -->
-  <main class="panel active" id="panel-kolekcja">
+  <section class="panel active" id="panel-kolekcja" role="tabpanel">
     <div class="map-hint">
-      <div class="map-hint-icon">🗺️</div>
+      <div class="map-hint-icon" aria-hidden="true">🗺️</div>
       <div class="map-hint-text">
         Znajdź figurkę anioła, zrób zdjęcie i oznacz jako zebraną.
         <strong>Zbierz wszystkie 5</strong> i odbierz odznakę PTTK „Anioł Torunia".
@@ -583,20 +708,24 @@ body {
     </div>
     <div class="section-title">Aniołki do zebrania</div>
     <div class="angel-grid" id="angel-grid"></div>
-  </main>
+  </section>
 
   <!-- PANEL: ZDJĘCIA -->
-  <main class="panel" id="panel-zdjecia">
+  <section class="panel" id="panel-zdjecia" role="tabpanel">
     <div class="section-title">Dodaj zdjęcie anioła</div>
+    <div id="storage-warning" class="storage-warning">
+      ⚠️ Pamięć przeglądarki prawie pełna. Kolejne zdjęcia mogą nie zostać zapisane.
+    </div>
     <label class="upload-label" for="photo-input">
-      <div class="upload-icon-big">📷</div>
-      <div class="upload-text">Dodaj zdjęcie z aparatu lub galerii</div>
+      <div class="upload-icon-big" aria-hidden="true">📷</div>
+      <div class="upload-text">Zrób zdjęcie lub wybierz z galerii</div>
       <div class="upload-sub">Zostanie przypisane do wybranego anioła</div>
     </label>
-    <input type="file" accept="image/*" id="photo-input" style="display:none">
+    <!-- capture="environment" otwiera tylny aparat na mobile -->
+    <input type="file" accept="image/*" capture="environment" id="photo-input" style="display:none">
 
     <div class="angel-select-wrap" id="angel-select-wrap">
-      <div class="section-title">Który anioł na zdjęciu?</div>
+      <div class="section-title" style="margin-bottom:10px;">Który anioł na zdjęciu?</div>
       <div class="angel-select-label">Wybierz lokalizację:</div>
       <div class="angel-btns" id="angel-btns"></div>
       <button class="confirm-btn" onclick="confirmPhoto()">Zapisz zdjęcie ✓</button>
@@ -606,13 +735,37 @@ body {
       Moje zdjęcia (<span id="photo-count">0</span>)
     </div>
     <div id="photo-list"></div>
-  </main>
+  </section>
+
+  <!-- PANEL: MAPA -->
+  <section class="panel" id="panel-mapa" role="tabpanel">
+    <div class="section-title">Mapa aniołków – starówka Torunia</div>
+    <div class="map-legend">
+      <div class="legend-item" id="leg-1"><span class="leg-num">1</span><span class="leg-name">JOnasz – Ratusz Staromiejski</span></div>
+      <div class="legend-item" id="leg-2"><span class="leg-num">2</span><span class="leg-name">Janek – Ul. Szczytna</span></div>
+      <div class="legend-item" id="leg-3"><span class="leg-num">3</span><span class="leg-name">Budław – Bulwar Filadelfijski</span></div>
+      <div class="legend-item" id="leg-4"><span class="leg-num">4</span><span class="leg-name">Optus – Rynek Nowomiejski 25</span></div>
+      <div class="legend-item" id="leg-5"><span class="leg-num">5</span><span class="leg-name">Manekinek – Ul. Wysoka 5</span></div>
+      <div class="legend-item" id="leg-6"><span class="leg-num">6</span><span class="leg-name">Ul. Szumana 1</span></div>
+      <div class="legend-item" id="leg-7"><span class="leg-num">7</span><span class="leg-name">Włóczykij – Most Piłsudskiego</span></div>
+      <div class="legend-item" id="leg-8"><span class="leg-num">8</span><span class="leg-name">Pod Krzywą Wieżą 1</span></div>
+      <div class="legend-item" id="leg-9"><span class="leg-num">9</span><span class="leg-name">Optus II – Ul. Szczytna 6</span></div>
+      <div class="legend-item" id="leg-10"><span class="leg-num">10</span><span class="leg-name">CKK Jordanki</span></div>
+    </div>
+    <div class="map-wrap" id="map-wrap">
+      <div id="angel-map" style="width:100%;height:100%;"></div>
+    </div>
+    <div class="map-footer-note">
+      <i class="ti ti-info-circle" aria-hidden="true"></i>
+      Złote pinezki = zebrane · Szare = do zebrania. Kliknij pinezkę po szczegóły.
+    </div>
+  </section>
 
   <!-- PANEL: ODZNAKA -->
-  <main class="panel" id="panel-odznaka">
+  <section class="panel" id="panel-odznaka" role="tabpanel">
     <div class="badge-area" id="badge-area">
       <div class="badge-ring" id="badge-ring">
-        <span id="badge-emoji">😇</span>
+        <span id="badge-emoji" aria-hidden="true">😇</span>
       </div>
       <div class="badge-title-big">Odznaka Anioła Torunia</div>
       <div class="badge-desc">
@@ -624,8 +777,8 @@ body {
       </div>
     </div>
 
-    <div class="earned-msg" id="earned-msg">
-      <div class="earned-emoji">🎉</div>
+    <div class="earned-msg" id="earned-msg" role="status">
+      <div class="earned-emoji" aria-hidden="true">🎉</div>
       <div class="earned-text">
         Wszystkie aniołki zebrane!<br>
         Możesz odebrać odznakę w oddziale PTTK.
@@ -648,10 +801,10 @@ body {
       </div>
       <div class="pttk-row">
         <i class="ti ti-world" aria-hidden="true"></i>
-        <span><a href="https://www.torunskianioly.pl" style="color:var(--gold-light);">www.torunskianioly.pl</a></span>
+        <span><a href="https://www.torunskianioly.pl" target="_blank" rel="noopener">www.torunskianioly.pl</a></span>
       </div>
     </div>
-  </main>
+  </section>
 
   <footer class="footer">
     Toruńskie Anioły · autorka rzeźb: Małgorzata Więcławska-Furyk · Miasto Toruń
@@ -659,9 +812,9 @@ body {
 </div>
 
 <!-- MODAL -->
-<div class="modal-backdrop" id="modal-backdrop" onclick="closeModal(event)">
-  <div class="modal-box" onclick="event.stopPropagation()">
-    <div class="modal-icon" id="modal-icon">😇</div>
+<div class="modal-backdrop" id="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="modal-name">
+  <div class="modal-box">
+    <div class="modal-icon" id="modal-icon" aria-hidden="true">😇</div>
     <div class="modal-name" id="modal-name">Anioł</div>
     <div class="modal-loc" id="modal-loc">Lokalizacja</div>
     <div class="modal-desc" id="modal-desc"></div>
@@ -672,61 +825,75 @@ body {
   </div>
 </div>
 
+<!-- TOAST -->
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
 <script>
 const ANGELS = [
-  {
-    id: 1,
-    name: "Anioł Ratuszowy",
-    loc: "Ratusz Staromiejski",
-    emoji: "🏛️",
-    desc: "Figurka przy ikonicznym Ratuszu Staromiejskim na Rynku Staromiejskim – sercu toruńskiej starówki. Najstarszy i najbardziej centralny punkt na trasie. Opiekun Placu, który pamięta wieki historii."
-  },
-  {
-    id: 2,
-    name: "Anioł Szczytny",
-    loc: "Ul. Szczytna",
-    emoji: "🏘️",
-    desc: "Ukryty wśród zabytkowych kamienic przy ulicy Szczytnej, niedaleko centrum starówki. Strażnik codziennego życia mieszczan toruńskich."
-  },
-  {
-    id: 3,
-    name: "Anioł Bulwarowy",
-    loc: "Bulwar Filadelfijski",
-    emoji: "⚓",
-    desc: "Strzeże nadbrzeża Wisły przy Bulwarze Filadelfijskim, z widokiem na rzekę i most. Anioł Wisły – patronuje żeglarzom i spacerowiczom."
-  },
-  {
-    id: 4,
-    name: "Anioł Nowomiejski",
-    loc: "Rynek Nowomiejski 25",
-    emoji: "🌿",
-    desc: "Na spokojnym, kameralnym Rynku Nowomiejskim, przy zabytkowej kamienicy nr 25. Mniej uczęszczany, ale równie ważny – strzeże spokojniejszej części starówki."
-  },
-  {
-    id: 5,
-    name: "Anioł z Wysokiej",
-    loc: "Ul. Wysoka 5",
-    emoji: "🔔",
-    desc: "Czuwa przy ul. Wysokiej 5, niedaleko Kościoła NMP i murów miejskich. Anioł kościelny – patronuje wszystkim odwiedzającym gotyckie świątynie Torunia."
-  }
+  { id: 1,  name: "JOnasz",     loc: "Ratusz Staromiejski",        emoji: "🏛", desc: "Pierwszy aniołek projektu, maj 2025. Siedzi w oknie Ratusza Staromiejskiego. Imie wybrane przez mieszkancow - charakterystyczne torunskie potwierdzenie. Symbol podrozy i odwagi." },
+  { id: 2,  name: "Janek",      loc: "Ul. Szczytna - Jan Olbracht",emoji: "🍺", desc: "Aniol browarniczny przy restauracji Jan Olbracht Browar Staromiejski. Siedzi na beczce z inskrypcja: Nic co ludzkie nie jest nam obce. Lipiec 2025." },
+  { id: 3,  name: "Budlaw",     loc: "Bulwar Filadelfijski",        emoji: "⚓", desc: "Aniol flisacki przy pawilonie nad Wisla. Nawiqzuje do tradycji hanzeatyckich i flisactwa, na ktorym opieralo sie bogactwo dawnego Torunia. Lipiec 2025." },
+  { id: 4,  name: "Optus",      loc: "Rynek Nowomiejski 25",        emoji: "👓", desc: "Aniol ufundowany przez Optometrie Karczewski. Strzeze spokojnego Rynku Nowomiejskiego przy kamienicy nr 25. Lato 2025." },
+  { id: 5,  name: "Manekinek",  loc: "Ul. Wysoka 5 - Manekin",     emoji: "🥞", desc: "Aniolek z okazji 25-lecia nalesnikarni Manekin. Imie wybrali mieszkancy wspolnie z Radiem Gra. Pazdziernik 2025." },
+  { id: 6,  name: "?",          loc: "Ul. Szumana 1",               emoji: "😊", desc: "Szosty aniolek, opisywany jako zadowolony z zycia. Pojawil sie przy ul. Szumana 1 w listopadzie 2025." },
+  { id: 7,  name: "Wloczykij",  loc: "Most im. Pilsudskiego",       emoji: "🚶", desc: "Aniolek z kijami trekkingowymi - fundacja Neuca dla Zdrowia. Pierwszy aniolek poza scisla starowka, na moscie drogowym. Grudzien 2025." },
+  { id: 8,  name: "?",          loc: "Pod Krzyw\u0105 Wie\u017c\u0105 1", emoji: "🗼", desc: "Aniol podpierajacy jedna reka Krzywa Wieze - manifest sily i zdrowia. Fundacja Swiat Zdrowia. Marzec 2026." },
+  { id: 9,  name: "Optus II",   loc: "Ul. Szczytna 6",              emoji: "🔭", desc: "Drugi aniolek Optometrii Karczewski, przy salonie przy Szczytnej 6. Marzec 2026." },
+  { id: 10, name: "?",          loc: "CKK Jordanki",                emoji: "🎭", desc: "Aniolek przy Centrum Kulturalno-Kongresowym Jordanki. Jeden z pierwszych poza starowka." }
 ];
 
+// --- STATE ---
 let collected = new Set();
-let photos = [];
+let photos = [];        // { angelId, date, thumbSrc }  — przechowuje miniatury, nie pełne base64
 let pendingPhotoData = null;
 let selectedAngelId = null;
 let modalAngel = null;
 
-try {
-  collected = new Set(JSON.parse(localStorage.getItem('ta_collected') || '[]'));
-  photos = JSON.parse(localStorage.getItem('ta_photos') || '[]');
-} catch(e) {}
+// --- PERSISTENCE ---
+// Zdjęcia: przechowujemy tylko miniaturę (max 200px) żeby nie przekroczyć limitu localStorage
+function resizeImage(dataUrl, maxPx, cb) {
+  const img = new Image();
+  img.onload = () => {
+    const scale = Math.min(1, maxPx / Math.max(img.width, img.height));
+    const w = Math.round(img.width * scale);
+    const h = Math.round(img.height * scale);
+    const c = document.createElement('canvas');
+    c.width = w; c.height = h;
+    c.getContext('2d').drawImage(img, 0, 0, w, h);
+    cb(c.toDataURL('image/jpeg', 0.7));
+  };
+  img.src = dataUrl;
+}
 
-function save() {
+function loadState() {
+  try {
+    const c = localStorage.getItem('ta_collected');
+    if (c) collected = new Set(JSON.parse(c));
+    const p = localStorage.getItem('ta_photos');
+    if (p) photos = JSON.parse(p);
+  } catch(e) { console.warn('Błąd odczytu localStorage:', e); }
+}
+
+function saveState() {
   try {
     localStorage.setItem('ta_collected', JSON.stringify([...collected]));
     localStorage.setItem('ta_photos', JSON.stringify(photos));
-  } catch(e) {}
+    document.getElementById('storage-warning').style.display = 'none';
+  } catch(e) {
+    // QuotaExceededError — ostrzeżenie, ale nie blokuj aplikacji
+    document.getElementById('storage-warning').style.display = 'block';
+    console.warn('localStorage pełne:', e);
+  }
+}
+
+// --- UI HELPERS ---
+let toastTimer = null;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
 }
 
 function updateProgress() {
@@ -734,10 +901,9 @@ function updateProgress() {
   const total = ANGELS.length;
   document.getElementById('progress-fill').style.width = ((n / total) * 100) + '%';
   document.getElementById('progress-label').textContent = n + ' / ' + total;
-  const remaining = total - n;
-  const allDone = remaining <= 0;
+  const allDone = n >= total;
 
-  document.getElementById('need-count').textContent = Math.max(0, remaining);
+  document.getElementById('need-count').textContent = Math.max(0, total - n);
   document.getElementById('need-label').style.display = allDone ? 'none' : 'block';
   document.getElementById('earned-msg').classList.toggle('show', allDone);
 
@@ -755,6 +921,9 @@ function renderGrid() {
     const done = collected.has(a.id);
     const card = document.createElement('div');
     card.className = 'angel-card' + (done ? ' collected' : '');
+    card.setAttribute('role', 'button');
+    card.setAttribute('tabindex', '0');
+    card.setAttribute('aria-label', a.name + ' – ' + a.loc);
     card.innerHTML = `
       <span class="checkmark" aria-hidden="true">✓</span>
       <span class="angel-icon" aria-hidden="true">${a.emoji}</span>
@@ -767,6 +936,7 @@ function renderGrid() {
       </button>
     `;
     card.addEventListener('click', () => openModal(a));
+    card.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openModal(a); } });
     grid.appendChild(card);
   });
 }
@@ -780,18 +950,16 @@ function renderPhotos() {
   }
   list.innerHTML = [...photos].reverse().map(p => {
     const a = ANGELS.find(x => x.id === p.angelId);
+    const thumb = p.thumbSrc
+      ? `<img src="${p.thumbSrc}" alt="${a ? a.name : 'Anioł'}">`
+      : `<span aria-hidden="true">${a ? a.emoji : '📷'}</span>`;
     return `<div class="photo-entry">
-      <div class="photo-thumb">${p.src
-        ? `<img src="${p.src}" alt="${a ? a.name : 'Anioł'}">`
-        : (a ? a.emoji : '📷')}
-      </div>
+      <div class="photo-thumb">${thumb}</div>
       <div class="photo-meta">
         <div class="photo-angel-name">${a ? a.name : 'Anioł'}</div>
         <div class="photo-date">${p.date}</div>
       </div>
-      <span class="badge-pill ${p.verified ? 'verified' : 'pending'}">
-        ${p.verified ? '✓ OK' : 'Oczekuje'}
-      </span>
+      <span class="badge-pill pending">Zebrano</span>
     </div>`;
   }).join('');
 }
@@ -800,11 +968,12 @@ function renderAngelBtns() {
   const wrap = document.getElementById('angel-btns');
   wrap.innerHTML = ANGELS.map(a =>
     `<button class="angel-btn" onclick="selectAngel(${a.id}, this)" data-id="${a.id}">
-      ${a.emoji} ${a.name}
+      <span aria-hidden="true">${a.emoji}</span> ${a.name}
     </button>`
   ).join('');
 }
 
+// --- ACTIONS ---
 function selectAngel(id, btn) {
   selectedAngelId = id;
   document.querySelectorAll('.angel-btn').forEach(b => b.classList.remove('selected'));
@@ -812,24 +981,27 @@ function selectAngel(id, btn) {
 }
 
 function confirmPhoto() {
-  if (!selectedAngelId || !pendingPhotoData) {
-    alert('Wybierz anioła, aby zapisać zdjęcie.');
-    return;
-  }
-  const d = new Date();
-  const dateStr = d.toLocaleDateString('pl-PL', { day: '2-digit', month: '2-digit', year: 'numeric' });
-  photos.push({ angelId: selectedAngelId, date: dateStr, verified: false, src: pendingPhotoData });
-  if (!collected.has(selectedAngelId)) {
-    collected.add(selectedAngelId);
-  }
-  save();
-  renderGrid();
-  renderPhotos();
-  updateProgress();
-  document.getElementById('angel-select-wrap').style.display = 'none';
-  pendingPhotoData = null;
-  selectedAngelId = null;
-  document.querySelectorAll('.angel-btn').forEach(b => b.classList.remove('selected'));
+  if (!selectedAngelId) { showToast('Wybierz najpierw anioła!'); return; }
+  if (!pendingPhotoData) { showToast('Brak zdjęcia!'); return; }
+
+  resizeImage(pendingPhotoData, 200, thumbSrc => {
+    const d = new Date();
+    const dateStr = d.toLocaleDateString('pl-PL', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    photos.push({ angelId: selectedAngelId, date: dateStr, thumbSrc });
+    if (!collected.has(selectedAngelId)) {
+      collected.add(selectedAngelId);
+    }
+    saveState();
+    renderGrid();
+    renderPhotos();
+    updateProgress();
+    document.getElementById('angel-select-wrap').style.display = 'none';
+    pendingPhotoData = null;
+    selectedAngelId = null;
+    document.querySelectorAll('.angel-btn').forEach(b => b.classList.remove('selected'));
+    const a = ANGELS.find(x => x.id === selectedAngelId || photos[photos.length-1]?.angelId === x.id);
+    showToast('Anioł zebrany! 🎉');
+  });
 }
 
 document.getElementById('photo-input').addEventListener('change', function(e) {
@@ -839,17 +1011,25 @@ document.getElementById('photo-input').addEventListener('change', function(e) {
   reader.onload = ev => {
     pendingPhotoData = ev.target.result;
     document.getElementById('angel-select-wrap').style.display = 'block';
+    // Przewiń do sekcji wyboru anioła
+    document.getElementById('angel-select-wrap').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   };
   reader.readAsDataURL(file);
-  this.value = '';
+  this.value = '';  // reset żeby można dodać to samo zdjęcie ponownie
 });
 
 function toggleCollect(id) {
-  if (collected.has(id)) collected.delete(id);
-  else collected.add(id);
-  save();
+  if (collected.has(id)) {
+    collected.delete(id);
+    showToast('Usunięto z kolekcji');
+  } else {
+    collected.add(id);
+    showToast('Anioł zebrany! 🎉');
+  }
+  saveState();
   renderGrid();
   updateProgress();
+  if (mapInitialized) refreshMapMarkers();
 }
 
 function openModal(a) {
@@ -863,39 +1043,160 @@ function openModal(a) {
   btn.textContent = done ? 'Zebrano ✓' : 'Oznacz jako zebranego';
   btn.disabled = done;
   document.getElementById('modal-backdrop').classList.add('open');
+  btn.focus();
 }
 
+// POPRAWKA: closeModal bez parametru musi też działać (np. z setTimeout)
 function closeModal(e) {
-  if (!e || e.target === document.getElementById('modal-backdrop')) {
-    document.getElementById('modal-backdrop').classList.remove('open');
-    modalAngel = null;
-  }
+  // Jeśli wywołano z onclick backdrop, sprawdź cel; jeśli bez argumentu – zawsze zamknij
+  if (e && e.target && e.target !== document.getElementById('modal-backdrop')) return;
+  document.getElementById('modal-backdrop').classList.remove('open');
+  modalAngel = null;
 }
+
+// Podpinamy backdrop osobno, żeby nie mieszać z closeModal()
+document.getElementById('modal-backdrop').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
 
 function collectFromModal() {
   if (!modalAngel) return;
   collected.add(modalAngel.id);
-  save();
+  saveState();
   renderGrid();
   updateProgress();
   const btn = document.getElementById('modal-collect-btn');
   btn.textContent = 'Zebrano ✓';
   btn.disabled = true;
-  setTimeout(closeModal, 800);
+  showToast('Anioł zebrany! 🎉');
+  setTimeout(() => closeModal(), 900);  // POPRAWKA: anonimowa funkcja, nie closeModal bezpośrednio
 }
 
 function switchTab(name) {
+  const names = ['kolekcja', 'zdjecia', 'mapa', 'odznaka'];
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => {
+    t.classList.remove('active');
+    t.setAttribute('aria-selected', 'false');
+  });
   document.getElementById('panel-' + name).classList.add('active');
-  const idx = ['kolekcja', 'zdjecia', 'odznaka'].indexOf(name);
-  document.querySelectorAll('.tab')[idx].classList.add('active');
+  const idx = names.indexOf(name);
+  const tabs = document.querySelectorAll('.tab');
+  if (idx >= 0) { tabs[idx].classList.add('active'); tabs[idx].setAttribute('aria-selected', 'true'); }
+  if (name === 'mapa') initMap();
 }
+
+// --- MAPA ---
+const ANGEL_COORDS = [
+  { id: 1,  lat: 53.0104863, lng: 18.6042518, label: '1',  name: 'JOnasz',      loc: 'Ratusz Staromiejski' },
+  { id: 2,  lat: 53.0110973, lng: 18.6057742, label: '2',  name: 'Janek',       loc: 'Ul. Szczytna – Jan Olbracht' },
+  { id: 3,  lat: 53.0083945, lng: 18.607722,  label: '3',  name: 'Budław',      loc: 'Bulwar Filadelfijski' },
+  { id: 4,  lat: 53.0120149, lng: 18.6116987, label: '4',  name: 'Optus',       loc: 'Rynek Nowomiejski 25' },
+  { id: 5,  lat: 53.0128673, lng: 18.6088248, label: '5',  name: 'Manekinek',   loc: 'Ul. Wysoka 5' },
+  { id: 6,  lat: 53.0129136, lng: 18.6116501, label: '6',  name: '–',           loc: 'Ul. Szumana 1' },
+  { id: 7,  lat: 53.0037929, lng: 18.6026365, label: '7',  name: 'Włóczykij',   loc: 'Most im. Piłsudskiego' },
+  { id: 8,  lat: 53.0084084, lng: 18.6021128, label: '8',  name: '–',           loc: 'Pod Krzywą Wieżą 1' },
+  { id: 9,  lat: 53.0108897, lng: 18.6064703, label: '9',  name: 'Optus II',    loc: 'Ul. Szczytna 6' },
+  { id: 10, lat: 53.013945,  lng: 18.602000,  label: '10', name: '–',           loc: 'CKK Jordanki' }
+];
+
+let mapInitialized = false;
+let leafletMap = null;
+let leafletMarkers = [];
+
+function initMap() {
+  if (mapInitialized) { refreshMapMarkers(); return; }
+  mapInitialized = true;
+
+  const wrap = document.getElementById('angel-map');
+  wrap.innerHTML = '';
+
+  leafletMap = L.map(wrap, { zoomControl: true }).setView([53.0090, 18.606], 15);
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    maxZoom: 19
+  }).addTo(leafletMap);
+
+  leafletMarkers = [];
+
+  ANGEL_COORDS.forEach(a => {
+    const done = collected.has(a.id);
+    const marker = _makeLeafletMarker(a, done);
+    marker.addTo(leafletMap);
+    marker.bindPopup(_popupHtml(a));
+    leafletMarkers.push({ id: a.id, marker, data: a });
+  });
+
+  updateLegend();
+
+  // Wymuszamy przerysowanie mapy po tym jak panel staje się widoczny
+  setTimeout(() => leafletMap.invalidateSize(), 100);
+}
+
+function _markerSvg(label, done) {
+  const fill  = done ? '#C9A84C' : '#888';
+  const stroke = done ? '#F0D88A' : '#bbb';
+  const text  = done ? '#fff' : '#fff';
+  const fontSize = label.length > 1 ? '10' : '12';
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+    <circle cx="16" cy="16" r="14" fill="${fill}" stroke="${stroke}" stroke-width="2.5"/>
+    <text x="16" y="20" text-anchor="middle" font-family="Cinzel,serif" font-size="${fontSize}" font-weight="600" fill="${text}">${label}</text>
+  </svg>`;
+}
+
+function _makeLeafletMarker(a, done) {
+  const icon = L.divIcon({
+    html: _markerSvg(a.label, done),
+    className: '',
+    iconSize: [32, 32],
+    iconAnchor: [16, 16],
+    popupAnchor: [0, -18]
+  });
+  return L.marker([a.lat, a.lng], { icon });
+}
+
+function _popupHtml(a) {
+  const done = collected.has(a.id);
+  return `<div style="font-family:'Lato',sans-serif; min-width:150px; padding:2px;">
+    <div style="font-family:'Cinzel',serif; font-size:13px; color:#1A2744; font-weight:600; margin-bottom:2px;">${a.name !== '–' ? a.name : 'Anioł #' + a.id}</div>
+    <div style="font-size:11px; color:#4A7BB5; margin-bottom:5px;">📍 ${a.loc}</div>
+    <div style="font-size:11px; font-weight:700; color:${done ? '#1A7A4A' : '#B36B00'};">${done ? '✓ Zebrano!' : '○ Do zebrania'}</div>
+  </div>`;
+}
+
+function refreshMapMarkers() {
+  leafletMarkers.forEach(({ id, marker, data }) => {
+    const done = collected.has(id);
+    const icon = L.divIcon({
+      html: _markerSvg(data.label, done),
+      className: '',
+      iconSize: [32, 32],
+      iconAnchor: [16, 16],
+      popupAnchor: [0, -18]
+    });
+    marker.setIcon(icon);
+    marker.setPopupContent(_popupHtml(data));
+  });
+  updateLegend();
+}
+
+function updateLegend() {
+  ANGEL_COORDS.forEach(a => {
+    const el = document.getElementById('leg-' + a.id);
+    if (!el) return;
+    el.classList.toggle('done', collected.has(a.id));
+  });
+}
+
+// Odśwież mapę przy każdej zmianie kolekcji - obsługiwane wewnątrz toggleCollect i collectFromModal
 
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') closeModal();
 });
 
+// --- INIT ---
+loadState();
 renderGrid();
 renderAngelBtns();
 renderPhotos();
