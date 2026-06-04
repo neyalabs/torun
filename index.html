@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Toruńskie Anioły – Kolekcjoner</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --gold: #C9A84C;
+  --gold-light: #F0D88A;
+  --navy: #1A2744;
+  --navy-light: #2A3F6F;
+  --cream: #F5EDD8;
+  --parchment: #EDE0C4;
+  --angel-blue: #4A7BB5;
+}
+
+html, body {
+  height: 100%;
+  font-family: 'Lato', sans-serif;
+  background: var(--cream);
+  color: var(--navy);
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0;
+  min-height: 100vh;
+}
+
+.app {
+  width: 100%;
+  max-width: 520px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--cream);
+  border-left: 1px solid rgba(201,168,76,0.3);
+  border-right: 1px solid rgba(201,168,76,0.3);
+}
+
+/* HEADER */
+.header {
+  background: var(--navy);
+  padding: 20px 24px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 2px solid var(--gold);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.header-angel {
+  font-size: 28px;
+  margin-right: 10px;
+}
+
+.header-text { flex: 1; }
+
+.header-title {
+  font-family: 'Cinzel', serif;
+  color: var(--gold-light);
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+.header-sub {
+  color: #A0B4CC;
+  font-size: 11px;
+  margin-top: 2px;
+  font-weight: 300;
+  letter-spacing: 0.5px;
+}
+
+.progress-wrap { text-align: right; }
+
+.progress-label {
+  color: var(--gold-light);
+  font-size: 12px;
+  margin-bottom: 5px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.progress-bar-bg {
+  background: rgba(255,255,255,0.12);
+  border-radius: 20px;
+  height: 7px;
+  width: 130px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--gold), var(--gold-light));
+  border-radius: 20px;
+  transition: width 0.5s ease;
+}
+
+/* TABS */
+.tabs {
+  display: flex;
+  border-bottom: 1.5px solid var(--gold);
+  background: var(--parchment);
+  position: sticky;
+  top: 78px;
+  z-index: 40;
+}
+
+.tab {
+  flex: 1;
+  padding: 11px 8px;
+  text-align: center;
+  font-size: 12px;
+  font-family: 'Cinzel', serif;
+  color: #888;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  border-bottom: 2.5px solid transparent;
+  transition: all 0.2s;
+  letter-spacing: 0.3px;
+}
+
+.tab.active {
+  color: var(--navy);
+  border-bottom-color: var(--gold);
+  background: var(--cream);
+}
+
+.tab:hover:not(.active) { background: rgba(201,168,76,0.08); }
+
+/* PANELS */
+.panel { display: none; padding: 20px 16px; flex: 1; }
+.panel.active { display: block; }
+
+.section-title {
+  font-family: 'Cinzel', serif;
+  color: var(--navy);
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 14px;
+  padding-bottom: 7px;
+  border-bottom: 1px solid var(--parchment);
+  letter-spacing: 0.5px;
+}
+
+/* MAP HINT */
+.map-hint {
+  background: var(--navy);
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.map-hint-icon { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
+
+.map-hint-text {
+  font-size: 11px;
+  color: #BCD0E8;
+  font-weight: 300;
+  line-height: 1.5;
+}
+
+.map-hint-text strong { color: var(--gold-light); font-weight: 700; }
+
+/* ANGEL GRID */
+.angel-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 12px;
+}
+
+.angel-card {
+  background: white;
+  border: 1px solid var(--parchment);
+  border-radius: 10px;
+  padding: 14px 10px 10px;
+  text-align: center;
+  position: relative;
+  transition: box-shadow 0.2s, transform 0.15s, border-color 0.2s;
+  cursor: pointer;
+}
+
+.angel-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 18px rgba(26,39,68,0.13);
+}
+
+.angel-card.collected {
+  border-color: var(--gold);
+  background: #FFFBF0;
+}
+
+.checkmark {
+  position: absolute;
+  top: 7px; right: 9px;
+  color: var(--gold);
+  font-size: 15px;
+  font-weight: 700;
+  display: none;
+}
+
+.angel-card.collected .checkmark { display: block; }
+
+.angel-icon {
+  font-size: 38px;
+  margin-bottom: 7px;
+  display: block;
+  filter: grayscale(1) opacity(0.3);
+  transition: filter 0.3s;
+}
+
+.angel-card.collected .angel-icon { filter: none; }
+
+.angel-name {
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  color: var(--navy);
+  font-weight: 600;
+  line-height: 1.35;
+  margin-bottom: 3px;
+}
+
+.angel-loc {
+  font-size: 10px;
+  color: #999;
+  font-weight: 300;
+  margin-bottom: 8px;
+}
+
+.angel-card.collected .angel-loc { color: var(--angel-blue); }
+
+.collect-btn {
+  width: 100%;
+  padding: 5px 0;
+  border: 1px solid var(--gold);
+  border-radius: 6px;
+  background: transparent;
+  font-family: 'Cinzel', serif;
+  font-size: 9px;
+  color: var(--gold);
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  transition: all 0.2s;
+}
+
+.collect-btn:hover { background: var(--gold); color: white; }
+
+.collect-btn.done {
+  background: var(--gold);
+  color: white;
+  cursor: default;
+}
+
+/* PHOTOS */
+.upload-label {
+  display: block;
+  border: 1.5px dashed var(--gold);
+  border-radius: 10px;
+  padding: 22px 20px;
+  text-align: center;
+  background: rgba(201,168,76,0.04);
+  margin-bottom: 16px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.upload-label:hover { background: rgba(201,168,76,0.10); }
+.upload-icon-big { font-size: 30px; margin-bottom: 7px; }
+.upload-text { font-family: 'Cinzel', serif; color: var(--navy); font-size: 11px; font-weight: 600; }
+.upload-sub { font-size: 10px; color: #aaa; margin-top: 3px; font-weight: 300; }
+
+.angel-select-wrap { display: none; margin-bottom: 16px; }
+.angel-select-label { font-size: 11px; color: #777; margin-bottom: 8px; font-weight: 300; }
+
+.angel-btns { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+
+.angel-btn {
+  padding: 5px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--parchment);
+  background: white;
+  font-size: 10px;
+  font-family: 'Lato', sans-serif;
+  cursor: pointer;
+  transition: all 0.15s;
+  color: var(--navy);
+}
+
+.angel-btn.selected {
+  background: var(--navy);
+  border-color: var(--navy);
+  color: var(--gold-light);
+}
+
+.confirm-btn {
+  width: 100%;
+  padding: 10px;
+  background: var(--navy);
+  color: var(--gold-light);
+  border: none;
+  border-radius: 8px;
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  transition: background 0.2s;
+}
+
+.confirm-btn:hover { background: var(--navy-light); }
+
+.photo-entry {
+  background: white;
+  border: 1px solid var(--parchment);
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.photo-thumb {
+  width: 46px; height: 46px;
+  border-radius: 7px;
+  background: var(--parchment);
+  object-fit: cover;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  overflow: hidden;
+}
+
+.photo-thumb img { width: 100%; height: 100%; object-fit: cover; border-radius: 7px; }
+
+.photo-meta { flex: 1; min-width: 0; }
+.photo-angel-name { font-family: 'Cinzel', serif; font-size: 11px; color: var(--navy); font-weight: 600; }
+.photo-date { font-size: 10px; color: #aaa; margin-top: 1px; }
+
+.badge-pill {
+  font-size: 9px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+}
+
+.verified { background: #E6F7EE; color: #1A7A4A; }
+.pending { background: #FFF4E5; color: #B36B00; }
+
+/* BADGE */
+.badge-area {
+  text-align: center;
+  padding: 10px 0 16px;
+}
+
+.badge-ring {
+  width: 120px; height: 120px;
+  margin: 0 auto 16px;
+  border-radius: 50%;
+  border: 3px solid var(--gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 56px;
+  background: white;
+  transition: all 0.4s;
+}
+
+.badge-ring.earned {
+  box-shadow: 0 0 0 7px rgba(201,168,76,0.15), 0 0 0 14px rgba(201,168,76,0.06);
+}
+
+.badge-locked .badge-ring {
+  filter: grayscale(1) opacity(0.35);
+  border-color: #ccc;
+}
+
+.badge-title-big {
+  font-family: 'Cinzel', serif;
+  font-size: 16px;
+  color: var(--navy);
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.badge-desc {
+  font-size: 11px;
+  color: #888;
+  line-height: 1.6;
+  max-width: 280px;
+  margin: 0 auto 8px;
+  font-weight: 300;
+}
+
+.need-label {
+  font-size: 11px;
+  color: #aaa;
+  margin-bottom: 14px;
+}
+
+.need-label span { color: var(--navy); font-weight: 700; }
+
+.earned-msg {
+  background: #FFFBEE;
+  border: 1.5px solid var(--gold);
+  border-radius: 10px;
+  padding: 14px;
+  text-align: center;
+  margin-bottom: 16px;
+  display: none;
+}
+
+.earned-msg.show { display: block; }
+.earned-emoji { font-size: 28px; margin-bottom: 6px; }
+.earned-text { font-family: 'Cinzel', serif; font-size: 12px; color: var(--navy); line-height: 1.5; }
+
+.pttk-card {
+  background: var(--navy);
+  border-radius: 12px;
+  padding: 16px 18px;
+}
+
+.pttk-header {
+  font-family: 'Cinzel', serif;
+  font-size: 12px;
+  color: var(--gold-light);
+  font-weight: 600;
+  margin-bottom: 10px;
+  letter-spacing: 0.5px;
+}
+
+.pttk-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  margin-bottom: 7px;
+  font-size: 11px;
+  color: #BCD0E8;
+  font-weight: 300;
+  line-height: 1.5;
+}
+
+.pttk-row i {
+  font-size: 14px;
+  flex-shrink: 0;
+  color: var(--gold);
+  margin-top: 1px;
+}
+
+/* MODAL */
+.modal-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(10,20,50,0.65);
+  z-index: 200;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.modal-backdrop.open { display: flex; }
+
+.modal-box {
+  background: var(--cream);
+  border: 1.5px solid var(--gold);
+  border-radius: 16px;
+  padding: 26px 22px 20px;
+  width: 100%;
+  max-width: 320px;
+  text-align: center;
+  animation: slideUp 0.2s ease;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(16px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.modal-icon { font-size: 52px; margin-bottom: 10px; }
+.modal-name { font-family: 'Cinzel', serif; font-size: 16px; color: var(--navy); font-weight: 600; margin-bottom: 4px; }
+.modal-loc { font-size: 12px; color: var(--angel-blue); margin-bottom: 12px; }
+.modal-desc { font-size: 11px; color: #666; line-height: 1.65; margin-bottom: 18px; font-weight: 300; }
+
+.modal-btns { display: flex; gap: 8px; }
+
+.modal-btn {
+  flex: 1;
+  padding: 9px;
+  border-radius: 8px;
+  border: 1px solid var(--gold);
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  cursor: pointer;
+  background: transparent;
+  color: var(--navy);
+  transition: all 0.2s;
+  letter-spacing: 0.3px;
+}
+
+.modal-btn:hover { background: rgba(201,168,76,0.1); }
+
+.modal-btn.primary {
+  background: var(--navy);
+  color: var(--gold-light);
+  border-color: var(--navy);
+}
+
+.modal-btn.primary:hover { background: var(--navy-light); }
+.modal-btn.primary:disabled { opacity: 0.55; cursor: default; }
+
+/* FOOTER */
+.footer {
+  text-align: center;
+  padding: 14px;
+  font-size: 10px;
+  color: #bbb;
+  font-weight: 300;
+  border-top: 1px solid var(--parchment);
+}
+
+.no-photos {
+  text-align: center;
+  padding: 20px 0;
+  font-size: 11px;
+  color: #bbb;
+  font-weight: 300;
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="header-angel">👼</div>
+    <div class="header-text">
+      <div class="header-title">Toruńskie Anioły</div>
+      <div class="header-sub">Kolekcjoner aniołków starówki</div>
+    </div>
+    <div class="progress-wrap">
+      <div class="progress-label" id="progress-label">0 / 5</div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- TABS -->
+  <nav class="tabs" role="tablist">
+    <button class="tab active" role="tab" onclick="switchTab('kolekcja')">Kolekcja</button>
+    <button class="tab" role="tab" onclick="switchTab('zdjecia')">Zdjęcia</button>
+    <button class="tab" role="tab" onclick="switchTab('odznaka')">Odznaka</button>
+  </nav>
+
+  <!-- PANEL: KOLEKCJA -->
+  <main class="panel active" id="panel-kolekcja">
+    <div class="map-hint">
+      <div class="map-hint-icon">🗺️</div>
+      <div class="map-hint-text">
+        Znajdź figurkę anioła, zrób zdjęcie i oznacz jako zebraną.
+        <strong>Zbierz wszystkie 5</strong> i odbierz odznakę PTTK „Anioł Torunia".
+      </div>
+    </div>
+    <div class="section-title">Aniołki do zebrania</div>
+    <div class="angel-grid" id="angel-grid"></div>
+  </main>
+
+  <!-- PANEL: ZDJĘCIA -->
+  <main class="panel" id="panel-zdjecia">
+    <div class="section-title">Dodaj zdjęcie anioła</div>
+    <label class="upload-label" for="photo-input">
+      <div class="upload-icon-big">📷</div>
+      <div class="upload-text">Dodaj zdjęcie z aparatu lub galerii</div>
+      <div class="upload-sub">Zostanie przypisane do wybranego anioła</div>
+    </label>
+    <input type="file" accept="image/*" id="photo-input" style="display:none">
+
+    <div class="angel-select-wrap" id="angel-select-wrap">
+      <div class="section-title">Który anioł na zdjęciu?</div>
+      <div class="angel-select-label">Wybierz lokalizację:</div>
+      <div class="angel-btns" id="angel-btns"></div>
+      <button class="confirm-btn" onclick="confirmPhoto()">Zapisz zdjęcie ✓</button>
+    </div>
+
+    <div class="section-title" style="margin-top:6px;">
+      Moje zdjęcia (<span id="photo-count">0</span>)
+    </div>
+    <div id="photo-list"></div>
+  </main>
+
+  <!-- PANEL: ODZNAKA -->
+  <main class="panel" id="panel-odznaka">
+    <div class="badge-area" id="badge-area">
+      <div class="badge-ring" id="badge-ring">
+        <span id="badge-emoji">😇</span>
+      </div>
+      <div class="badge-title-big">Odznaka Anioła Torunia</div>
+      <div class="badge-desc">
+        Zbierz wszystkie 5 aniołków toruńskiej starówki,
+        aby zdobyć oficjalną odznakę PTTK.
+      </div>
+      <div class="need-label" id="need-label">
+        Potrzebujesz jeszcze <span id="need-count">5</span> aniołków
+      </div>
+    </div>
+
+    <div class="earned-msg" id="earned-msg">
+      <div class="earned-emoji">🎉</div>
+      <div class="earned-text">
+        Wszystkie aniołki zebrane!<br>
+        Możesz odebrać odznakę w oddziale PTTK.
+      </div>
+    </div>
+
+    <div class="pttk-card">
+      <div class="pttk-header">📍 Gdzie odebrać odznakę?</div>
+      <div class="pttk-row">
+        <i class="ti ti-building" aria-hidden="true"></i>
+        <span>Oddział PTTK w Toruniu<br>ul. Podmurna 4/6, 87–100 Toruń</span>
+      </div>
+      <div class="pttk-row">
+        <i class="ti ti-clock" aria-hidden="true"></i>
+        <span>Poniedziałek – Piątek: 9:00 – 16:00</span>
+      </div>
+      <div class="pttk-row">
+        <i class="ti ti-camera" aria-hidden="true"></i>
+        <span>Pokaż zdjęcia zebranych aniołków jako dowód wizyty przy każdej figurce.</span>
+      </div>
+      <div class="pttk-row">
+        <i class="ti ti-world" aria-hidden="true"></i>
+        <span><a href="https://www.torunskianioly.pl" style="color:var(--gold-light);">www.torunskianioly.pl</a></span>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    Toruńskie Anioły · autorka rzeźb: Małgorzata Więcławska-Furyk · Miasto Toruń
+  </footer>
+</div>
+
+<!-- MODAL -->
+<div class="modal-backdrop" id="modal-backdrop" onclick="closeModal(event)">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <div class="modal-icon" id="modal-icon">😇</div>
+    <div class="modal-name" id="modal-name">Anioł</div>
+    <div class="modal-loc" id="modal-loc">Lokalizacja</div>
+    <div class="modal-desc" id="modal-desc"></div>
+    <div class="modal-btns">
+      <button class="modal-btn" onclick="closeModal()">Zamknij</button>
+      <button class="modal-btn primary" id="modal-collect-btn" onclick="collectFromModal()">Oznacz jako zebranego</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const ANGELS = [
+  {
+    id: 1,
+    name: "Anioł Ratuszowy",
+    loc: "Ratusz Staromiejski",
+    emoji: "🏛️",
+    desc: "Figurka przy ikonicznym Ratuszu Staromiejskim na Rynku Staromiejskim – sercu toruńskiej starówki. Najstarszy i najbardziej centralny punkt na trasie. Opiekun Placu, który pamięta wieki historii."
+  },
+  {
+    id: 2,
+    name: "Anioł Szczytny",
+    loc: "Ul. Szczytna",
+    emoji: "🏘️",
+    desc: "Ukryty wśród zabytkowych kamienic przy ulicy Szczytnej, niedaleko centrum starówki. Strażnik codziennego życia mieszczan toruńskich."
+  },
+  {
+    id: 3,
+    name: "Anioł Bulwarowy",
+    loc: "Bulwar Filadelfijski",
+    emoji: "⚓",
+    desc: "Strzeże nadbrzeża Wisły przy Bulwarze Filadelfijskim, z widokiem na rzekę i most. Anioł Wisły – patronuje żeglarzom i spacerowiczom."
+  },
+  {
+    id: 4,
+    name: "Anioł Nowomiejski",
+    loc: "Rynek Nowomiejski 25",
+    emoji: "🌿",
+    desc: "Na spokojnym, kameralnym Rynku Nowomiejskim, przy zabytkowej kamienicy nr 25. Mniej uczęszczany, ale równie ważny – strzeże spokojniejszej części starówki."
+  },
+  {
+    id: 5,
+    name: "Anioł z Wysokiej",
+    loc: "Ul. Wysoka 5",
+    emoji: "🔔",
+    desc: "Czuwa przy ul. Wysokiej 5, niedaleko Kościoła NMP i murów miejskich. Anioł kościelny – patronuje wszystkim odwiedzającym gotyckie świątynie Torunia."
+  }
+];
+
+let collected = new Set();
+let photos = [];
+let pendingPhotoData = null;
+let selectedAngelId = null;
+let modalAngel = null;
+
+try {
+  collected = new Set(JSON.parse(localStorage.getItem('ta_collected') || '[]'));
+  photos = JSON.parse(localStorage.getItem('ta_photos') || '[]');
+} catch(e) {}
+
+function save() {
+  try {
+    localStorage.setItem('ta_collected', JSON.stringify([...collected]));
+    localStorage.setItem('ta_photos', JSON.stringify(photos));
+  } catch(e) {}
+}
+
+function updateProgress() {
+  const n = collected.size;
+  const total = ANGELS.length;
+  document.getElementById('progress-fill').style.width = ((n / total) * 100) + '%';
+  document.getElementById('progress-label').textContent = n + ' / ' + total;
+  const remaining = total - n;
+  const allDone = remaining <= 0;
+
+  document.getElementById('need-count').textContent = Math.max(0, remaining);
+  document.getElementById('need-label').style.display = allDone ? 'none' : 'block';
+  document.getElementById('earned-msg').classList.toggle('show', allDone);
+
+  const ring = document.getElementById('badge-ring');
+  const area = document.getElementById('badge-area');
+  ring.classList.toggle('earned', allDone);
+  area.classList.toggle('badge-locked', !allDone);
+  document.getElementById('badge-emoji').textContent = allDone ? '👼' : '😇';
+}
+
+function renderGrid() {
+  const grid = document.getElementById('angel-grid');
+  grid.innerHTML = '';
+  ANGELS.forEach(a => {
+    const done = collected.has(a.id);
+    const card = document.createElement('div');
+    card.className = 'angel-card' + (done ? ' collected' : '');
+    card.innerHTML = `
+      <span class="checkmark" aria-hidden="true">✓</span>
+      <span class="angel-icon" aria-hidden="true">${a.emoji}</span>
+      <div class="angel-name">${a.name}</div>
+      <div class="angel-loc">${a.loc}</div>
+      <button class="collect-btn${done ? ' done' : ''}"
+        onclick="event.stopPropagation(); toggleCollect(${a.id})"
+        aria-label="${done ? 'Zebrano: ' : 'Oznacz jako zebranego: '}${a.name}">
+        ${done ? 'Zebrano ✓' : 'Oznacz jako zebranego'}
+      </button>
+    `;
+    card.addEventListener('click', () => openModal(a));
+    grid.appendChild(card);
+  });
+}
+
+function renderPhotos() {
+  const list = document.getElementById('photo-list');
+  document.getElementById('photo-count').textContent = photos.length;
+  if (!photos.length) {
+    list.innerHTML = '<div class="no-photos">Brak zdjęć – dodaj pierwsze po znalezieniu anioła!</div>';
+    return;
+  }
+  list.innerHTML = [...photos].reverse().map(p => {
+    const a = ANGELS.find(x => x.id === p.angelId);
+    return `<div class="photo-entry">
+      <div class="photo-thumb">${p.src
+        ? `<img src="${p.src}" alt="${a ? a.name : 'Anioł'}">`
+        : (a ? a.emoji : '📷')}
+      </div>
+      <div class="photo-meta">
+        <div class="photo-angel-name">${a ? a.name : 'Anioł'}</div>
+        <div class="photo-date">${p.date}</div>
+      </div>
+      <span class="badge-pill ${p.verified ? 'verified' : 'pending'}">
+        ${p.verified ? '✓ OK' : 'Oczekuje'}
+      </span>
+    </div>`;
+  }).join('');
+}
+
+function renderAngelBtns() {
+  const wrap = document.getElementById('angel-btns');
+  wrap.innerHTML = ANGELS.map(a =>
+    `<button class="angel-btn" onclick="selectAngel(${a.id}, this)" data-id="${a.id}">
+      ${a.emoji} ${a.name}
+    </button>`
+  ).join('');
+}
+
+function selectAngel(id, btn) {
+  selectedAngelId = id;
+  document.querySelectorAll('.angel-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+}
+
+function confirmPhoto() {
+  if (!selectedAngelId || !pendingPhotoData) {
+    alert('Wybierz anioła, aby zapisać zdjęcie.');
+    return;
+  }
+  const d = new Date();
+  const dateStr = d.toLocaleDateString('pl-PL', { day: '2-digit', month: '2-digit', year: 'numeric' });
+  photos.push({ angelId: selectedAngelId, date: dateStr, verified: false, src: pendingPhotoData });
+  if (!collected.has(selectedAngelId)) {
+    collected.add(selectedAngelId);
+  }
+  save();
+  renderGrid();
+  renderPhotos();
+  updateProgress();
+  document.getElementById('angel-select-wrap').style.display = 'none';
+  pendingPhotoData = null;
+  selectedAngelId = null;
+  document.querySelectorAll('.angel-btn').forEach(b => b.classList.remove('selected'));
+}
+
+document.getElementById('photo-input').addEventListener('change', function(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    pendingPhotoData = ev.target.result;
+    document.getElementById('angel-select-wrap').style.display = 'block';
+  };
+  reader.readAsDataURL(file);
+  this.value = '';
+});
+
+function toggleCollect(id) {
+  if (collected.has(id)) collected.delete(id);
+  else collected.add(id);
+  save();
+  renderGrid();
+  updateProgress();
+}
+
+function openModal(a) {
+  modalAngel = a;
+  document.getElementById('modal-icon').textContent = a.emoji;
+  document.getElementById('modal-name').textContent = a.name;
+  document.getElementById('modal-loc').textContent = '📍 ' + a.loc;
+  document.getElementById('modal-desc').textContent = a.desc;
+  const btn = document.getElementById('modal-collect-btn');
+  const done = collected.has(a.id);
+  btn.textContent = done ? 'Zebrano ✓' : 'Oznacz jako zebranego';
+  btn.disabled = done;
+  document.getElementById('modal-backdrop').classList.add('open');
+}
+
+function closeModal(e) {
+  if (!e || e.target === document.getElementById('modal-backdrop')) {
+    document.getElementById('modal-backdrop').classList.remove('open');
+    modalAngel = null;
+  }
+}
+
+function collectFromModal() {
+  if (!modalAngel) return;
+  collected.add(modalAngel.id);
+  save();
+  renderGrid();
+  updateProgress();
+  const btn = document.getElementById('modal-collect-btn');
+  btn.textContent = 'Zebrano ✓';
+  btn.disabled = true;
+  setTimeout(closeModal, 800);
+}
+
+function switchTab(name) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  const idx = ['kolekcja', 'zdjecia', 'odznaka'].indexOf(name);
+  document.querySelectorAll('.tab')[idx].classList.add('active');
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeModal();
+});
+
+renderGrid();
+renderAngelBtns();
+renderPhotos();
+updateProgress();
+</script>
+</body>
+</html>
